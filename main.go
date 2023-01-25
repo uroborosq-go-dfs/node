@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"node/fs"
-	"node/listener"
-	"node/service"
+	"github.com/uroborosq-go-dfs/node/fs"
+	"github.com/uroborosq-go-dfs/node/listener"
+	"github.com/uroborosq-go-dfs/node/service"
 	"time"
 )
 
@@ -13,7 +13,7 @@ func main() {
 
 	storage := fs.New("/home/uroborosq/Рабочий стол/Одиночные проекты/go-dfs/Полигон/node1")
 	s := service.New(storage)
-	listen := listener.CreateTcpListener("12345", s)
+	listen := listener.New("http", ":12345", s)
 	for {
 		err := listen.Listen()
 		if err != nil {

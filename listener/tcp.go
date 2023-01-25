@@ -4,8 +4,10 @@ import (
 	"bufio"
 	"encoding/binary"
 	"fmt"
+	"github.com/uroborosq-go-dfs/node/service"
 	"net"
-	"node/service"
+
+	code "github.com/uroborosq-go-dfs/models/tcp-operation-code"
 )
 
 func CreateTcpListener(port string, service *service.NodeService) NodeListener {
@@ -42,7 +44,7 @@ func (t *TcpListener) Listen() error {
 			fmt.Println("can't read from the stream")
 		}
 		switch operationCode[0] {
-		case 1:
+		case code.SendFile:
 			{
 				lenBytes := make([]byte, 4)
 				read, err = reader.Read(lenBytes)
@@ -69,7 +71,7 @@ func (t *TcpListener) Listen() error {
 					fmt.Println(err.Error())
 				}
 			}
-		case 2:
+		case code.RequestFile:
 			{
 				lenBytes := make([]byte, 4)
 				read, err = reader.Read(lenBytes)
@@ -103,7 +105,7 @@ func (t *TcpListener) Listen() error {
 				if err != nil {
 					fmt.Println(err.Error())
 					break
-				} else if write != read {
+				} else if write != 8 {
 					fmt.Println("can't read to the stream")
 					break
 				}
@@ -123,7 +125,7 @@ func (t *TcpListener) Listen() error {
 					}
 				}
 			}
-		case 3:
+		case code.RequestList:
 			{
 				paths := t.service.GetPathList()
 				size := uint64(0)
@@ -148,7 +150,7 @@ func (t *TcpListener) Listen() error {
 					}
 				}
 			}
-		case 4:
+		case code.RequestSize:
 			{
 				size := t.service.GetNodeSize()
 				sizeBytes := make([]byte, 8)
@@ -160,7 +162,7 @@ func (t *TcpListener) Listen() error {
 					fmt.Println("can't write to the stream")
 				}
 			}
-		case 5:
+		case code.RemoveFile:
 			{
 				lenBytes := make([]byte, 4)
 				read, err = reader.Read(lenBytes)

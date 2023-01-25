@@ -1,8 +1,8 @@
 package service
 
 import (
+	"github.com/uroborosq-go-dfs/node/fs"
 	"io"
-	"node/fs"
 )
 
 type NodeService struct {

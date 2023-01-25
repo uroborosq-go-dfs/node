@@ -29,9 +29,11 @@ func (h *HostFS) Save(path string, reader io.Reader) error {
 	fileSize := int64(0)
 	for {
 		read, err := reader.Read(buffer)
-		if err != nil {
+		if err != nil && err != io.EOF {
 			return err
 		} else if read == 0 {
+			break
+		} else if err == io.EOF {
 			break
 		}
 		write, err := file.Write(buffer[:read])
